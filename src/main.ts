@@ -13,7 +13,7 @@ const args = arg({
     '-f': '--from',
     '-t': '--to'
 });
-if (process.env['OPENAI_API_KEY'] === null) {
+if (process.env['OPENAI_API_KEY'] === '') {
     exitError("OPENAI_API_KEY enviroment variable not set")
 }
 const apiKey = process.env['OPENAI_API_KEY'];
