@@ -1,5 +1,6 @@
 #!/bin/bash
 
+npm install .;
 npm run build;
 mkdir -p ./bin;
 DISTPATH=$(realpath ./dist)
