@@ -5,38 +5,38 @@ import fs from 'fs'
 import path from 'path'
 
 const args = arg({
-    '--input': String,
     '--output': String,
     '--from': String,
     '--to': String,
 
-    '-i': '--input',
     '-o': '--output',
     '-f': '--from',
     '-t': '--to'
 });
-if(args['--input'] === undefined) {
-    console.error("no input file specified");
-    process.exit(-1);
+if (process.env['OPENAI_API_KEY'] === null) {
+    exitError("OPENAI_API_KEY enviroment variable not set")
 }
-let input = fs.readFileSync(path.join(process.cwd(), args["--input"])).toString();
+const apiKey = process.env['OPENAI_API_KEY'];
+if(args._[0] === undefined) {
+    exitError("no input file path specified");
+}
+const input = fs.readFileSync(path.join(process.cwd(), args._[0])).toString();
 if(args['--to'] === undefined) {
-    console.error("output language not specified")
-    process.exit(-1);
+    exitError("output language not specified")
 }
 const to = args['--to'];
 if(args['--output'] === undefined) {
-    console.error("output file not specified")
-    process.exit(-1);
+    exitError("output file path not specified")
 }
 const output = args['--output'];
 const from: null | string = args['--from'] === undefined ? null : args['--from'];
+
 const transpiler = new OpenAI({
-    apiKey: process.env['OPENAI_API_KEY']
+    apiKey: apiKey
 })
 const prompt = prompts.generatePrompt(input, to, from!);
 
-console.log("compiling...")
+console.log("Starting compilation...")
 transpiler.responses.create({
     model: "gpt-5-nano",
     instructions: prompts.instructions,
@@ -45,26 +45,25 @@ transpiler.responses.create({
     const response: String = resp.output_text;
     processResponse(response, output);
 }).catch((err) => {
-    console.error(err)
+    exitError(err)
 })
 
 function processResponse(response: String, output: string){
     if(response.startsWith('OUTPUT:')) {
         fs.writeFileSync(path.join(process.cwd(), output), response.slice('OUTPUT:'.length))
         console.log(
-`
-finished.
-Output written to ${output}
-`)
+`Finished.
+Output written to ${output}`)
     } else if (response.startsWith('ERRORS:')){
         const errors = response.slice('ERRORS:'.length)
-        console.error(
-`
-COMPILATION ERRORS REPORTED:
-${errors}
-`)
+        exitError(
+`COMPILATION ERRORS REPORTED:
+${errors}`)
     } else {
-        console.error("unknown error")
-        process.exit(-1)
+        exitError("unknown error")
     }
+}
+function exitError(msg?: string) : never {
+    console.error(`Error: ${msg}`)
+    process.exit(-1);
 }
