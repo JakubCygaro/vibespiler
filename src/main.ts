@@ -16,15 +16,18 @@ const args = arg({
     '-t': '--to'
 });
 if(args['--input'] === undefined) {
-    throw new Error("no input file specified");
+    console.error("no input file specified");
+    process.exit(-1);
 }
 let input = fs.readFileSync(path.join(process.cwd(), args["--input"])).toString();
 if(args['--to'] === undefined) {
-    throw new Error("output language not specified")
+    console.error("output language not specified")
+    process.exit(-1);
 }
 const to = args['--to'];
 if(args['--output'] === undefined) {
-    throw new Error("output file not specified")
+    console.error("output file not specified")
+    process.exit(-1);
 }
 const output = args['--output'];
 const from: null | string = args['--from'] === undefined ? null : args['--from'];
@@ -48,18 +51,20 @@ transpiler.responses.create({
 function processResponse(response: String, output: string){
     if(response.startsWith('OUTPUT:')) {
         fs.writeFileSync(path.join(process.cwd(), output), response.slice('OUTPUT:'.length))
-        console.log(`
-    finished.
-    Output written to ${output}
-    `)
+        console.log(
+`
+finished.
+Output written to ${output}
+`)
     } else if (response.startsWith('ERRORS:')){
         const errors = response.slice('ERRORS:'.length)
         console.error(
-    `
-    COMPILATION ERRORS REPORTED:
-    ${errors}
-    `)
+`
+COMPILATION ERRORS REPORTED:
+${errors}
+`)
     } else {
-        throw new Error("unknown error")
+        console.error("unknown error")
+        process.exit(-1)
     }
 }
