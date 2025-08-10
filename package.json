@@ -1,0 +1,29 @@
+{
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "arg": "^5.0.2",
+    "openai": "^5.12.2"
+  },
+  "name": "vibesc",
+  "version": "0.1.0",
+  "description": "The vibes-based compiler",
+  "keywords": ["vibes", "typescript"],
+  "homepage": "https://github.com/JakubCygaro/vibespiler",
+  "bugs": {
+    "url": "https://github.com/JakubCygaro/vibespiler/issues"
+  },
+  "author": "Adam Papieros",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JakubCygaro/vibespiler"
+  },
+  "files": ["dist"],
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+      "build": "tsc"
+  }
+}

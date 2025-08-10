@@ -1,5 +1,5 @@
 import { OpenAI } from "openai"
-import * as prompts from "./prompts"
+import * as prompts from "./prompts.js"
 import arg from "arg"
 import fs from 'fs'
 import path from 'path'

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tsc;
+npm run build;
 mkdir -p ./bin;
 DISTPATH=$(realpath ./dist)
 cat <<EOF > ./bin/vibesc
