@@ -4,49 +4,58 @@ import arg from "arg"
 import fs from 'fs'
 import path from 'path'
 
-const args = arg({
-    '--output': String,
-    '--from': String,
-    '--to': String,
+try{
+    main();
+} catch (e: any) {
+    console.error("Error: ", e.message);
+}
 
-    '-o': '--output',
-    '-f': '--from',
-    '-t': '--to'
-});
-if (process.env['OPENAI_API_KEY'] === '') {
-    exitError("OPENAI_API_KEY enviroment variable not set")
-}
-const apiKey = process.env['OPENAI_API_KEY'];
-if(args._[0] === undefined) {
-    exitError("no input file path specified");
-}
-const input = fs.readFileSync(path.join(process.cwd(), args._[0])).toString();
-if(args['--to'] === undefined) {
-    exitError("output language not specified")
-}
-const to = args['--to'];
-if(args['--output'] === undefined) {
-    exitError("output file path not specified")
-}
-const output = args['--output'];
-const from: null | string = args['--from'] === undefined ? null : args['--from'];
+function main(): void {
 
-const transpiler = new OpenAI({
-    apiKey: apiKey
-})
-const prompt = prompts.generatePrompt(input, to, from!);
+    const args = arg({
+        '--output': String,
+        '--from': String,
+        '--to': String,
 
-console.log("Starting compilation...")
-transpiler.responses.create({
-    model: "gpt-5-nano",
-    instructions: prompts.instructions,
-    input: prompt,
-}).then((resp) => {
-    const response: String = resp.output_text;
-    processResponse(response, output);
-}).catch((err) => {
-    exitError(err)
-})
+        '-o': '--output',
+        '-f': '--from',
+        '-t': '--to'
+    });
+    if (process.env['OPENAI_API_KEY'] === '') {
+        exitError("OPENAI_API_KEY enviroment variable not set")
+    }
+    const apiKey = process.env['OPENAI_API_KEY'];
+    if(args._[0] === undefined) {
+        exitError("no input file path specified");
+    }
+    const input = fs.readFileSync(path.join(process.cwd(), args._[0])).toString();
+    if(args['--to'] === undefined) {
+        exitError("output language not specified")
+    }
+    const to = args['--to'];
+    if(args['--output'] === undefined) {
+        exitError("output file path not specified")
+    }
+    const output = args['--output'];
+    const from: null | string = args['--from'] === undefined ? null : args['--from'];
+
+    const transpiler = new OpenAI({
+        apiKey: apiKey
+    })
+    const prompt = prompts.generatePrompt(input, to, from!);
+
+    console.log("Starting compilation...")
+    transpiler.responses.create({
+        model: "gpt-5-nano",
+        instructions: prompts.instructions,
+        input: prompt,
+    }).then((resp) => {
+        const response: String = resp.output_text;
+        processResponse(response, output);
+    }).catch((err) => {
+        exitError(err)
+    })
+}
 
 function processResponse(response: String, output: string){
     if(response.startsWith('OUTPUT:')) {
