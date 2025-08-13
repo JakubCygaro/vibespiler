@@ -1,12 +1,11 @@
 @ECHO OFF
-start cmd /k "npm install ."
-start cmd /k "npm run build"
-MD bin;
-set DISTPATH=CALL :NORMALIZEPATH "./dist"
-echo node %DISTPATH%\main.js %%*> "./bin/vibesc.cmd"
-echo node %DISTPATH%\main.js %%*>> "./bin/vibesc.cmd"
-
-REM chmod +x ./bin/vibesc
+cmd /c "npm install ."
+cmd /c "npm run build"
+MD ./bin 2> NUL
+CALL :NORMALIZEPATH ".\dist"
+set DISTPATH=%RETVAL%
+echo node %DISTPATH%\main.js %%*> ".\bin\vibesc.cmd"
+EXIT /B
 
 :NORMALIZEPATH
   SET RETVAL=%~f1
