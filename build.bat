@@ -1,6 +1,6 @@
 @ECHO OFF
-npm install .
-npm run build
+start cmd /k "npm install ."
+start cmd /k "npm run build"
 MD bin;
 set DISTPATH=CALL :NORMALIZEPATH "./dist"
 echo node %DISTPATH%\main.js %%*> "./bin/vibesc.cmd"
