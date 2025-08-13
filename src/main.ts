@@ -1,6 +1,6 @@
 import { OpenAI } from "openai"
 import * as prompts from "./prompts.js"
-import arg from "arg"
+import * as args from "./args.js"
 import fs from 'fs'
 import path from 'path'
 
@@ -12,37 +12,34 @@ try{
 
 function main(): void {
 
-    const args = arg({
-        '--output': String,
-        '--from': String,
-        '--to': String,
-
-        '-o': '--output',
-        '-f': '--from',
-        '-t': '--to'
-    });
-    if (process.env['OPENAI_API_KEY'] === '') {
-        exitError("OPENAI_API_KEY enviroment variable not set")
+    const a = args.parseArguments();
+    if (a.help) {
+        args.printHelp()
+        process.exit(0);
+    }
+    if (process.env['OPENAI_API_KEY'] == null) {
+        throw Error("OPENAI_API_KEY enviroment variable not set")
     }
     const apiKey = process.env['OPENAI_API_KEY'];
-    if(args._[0] === undefined) {
-        exitError("no input file path specified");
+
+    if(a.inputFile === undefined) {
+        throw Error("no input file path specified");
     }
-    const input = fs.readFileSync(path.join(process.cwd(), args._[0])).toString();
-    if(args['--to'] === undefined) {
-        exitError("output language not specified")
+    if(a.to === undefined) {
+        throw Error("output language not specified")
     }
-    const to = args['--to'];
-    if(args['--output'] === undefined) {
-        exitError("output file path not specified")
+    if(a.outputFile === undefined) {
+        throw Error("output file path not specified")
     }
-    const output = args['--output'];
-    const from: null | string = args['--from'] === undefined ? null : args['--from'];
+    const inputPath = path.join(process.cwd(), a.inputFile)
+
+    const input = fs.readFileSync(inputPath).toString();
 
     const transpiler = new OpenAI({
         apiKey: apiKey
     })
-    const prompt = prompts.generatePrompt(input, to, from!);
+
+    const prompt = prompts.generatePrompt(input, a.to, a.from!);
 
     console.log("Starting compilation...")
     transpiler.responses.create({
@@ -51,9 +48,9 @@ function main(): void {
         input: prompt,
     }).then((resp) => {
         const response: String = resp.output_text;
-        processResponse(response, output);
+        processResponse(response, a.outputFile!);
     }).catch((err) => {
-        exitError(err)
+        throw Error(err)
     })
 }
 
