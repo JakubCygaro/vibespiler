@@ -23,16 +23,15 @@ and *should* preserve its function.
 
 ### Linux
 
-Run the provided `./build.sh` script, and used the produced `./bin/vibesc` script to run the compiler. You can also add it to your $PATH
+Run the provided `./build.sh` script, and use the produced `./bin/vibesc` script to run the compiler. You can also add it to your $PATH
 so you can get sloppy from anywhere on your machine.
 
 ### Windows
 
-Run
-```
-npm install .
-npm run build
-
-```
+Run the provided `./build.bat` script and use the produced `./bin/vibesc.cmd` script to run the compiler.
 
 ## USAGE
+
+The compiler provides a help message with the `--help` flag.
+
+**THE SLOPILER WILL NOT WORK UNLESS THE OPENAPI_API_KEY ENVIRONMENTAL VARIABLE IS SET TO A VALID API KEY FOR CHATGPT5-NANO**
