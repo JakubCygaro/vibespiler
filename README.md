@@ -34,7 +34,7 @@ Run the provided `./build.bat` script and use the produced `./bin/vibesc.cmd` sc
 
 The compiler provides a help message with the `--help` flag.
 
-**THE SLOPILER WILL NOT WORK UNLESS THE OPENAPI_API_KEY ENVIRONMENTAL VARIABLE IS SET TO A VALID API KEY FOR CHATGPT5-NANO**
+**THE SLOPILER WILL NOT WORK UNLESS THE OPENAPI_API_KEY ENVIRONMENT VARIABLE IS SET TO A VALID API KEY FOR CHATGPT5-NANO**
 
 
 # CREDITS
